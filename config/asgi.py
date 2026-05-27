@@ -11,6 +11,11 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'to_do_list.settings')
+from config.env import env
+
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE",
+    env.str("DJANGO_SETTINGS_MODULE", default="config.django.local"),
+)
 
 application = get_asgi_application()

@@ -1,5 +1,5 @@
 from django.db import models
-from todos.models import TodoList
+from todolist.todos.models import TodoList
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 

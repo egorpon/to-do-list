@@ -1,5 +1,5 @@
 from rest_framework import generics
-from ..models import TodoList
+from ....todos.models import TodoList
 from .serializers import (
     TodoListSerializer,
     TodoListCreateUpdateSerializer,
