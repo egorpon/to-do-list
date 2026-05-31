@@ -19,5 +19,5 @@ class Task(models.Model):
         return self.name
 
     def clean(self):
-        if timezone.now() >= self.due_date:
+        if self.due_date and timezone.now() >= self.due_date:
             raise ValidationError("Due date cannot be in the past")

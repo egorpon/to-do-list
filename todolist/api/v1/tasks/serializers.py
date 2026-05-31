@@ -6,18 +6,31 @@ from django.utils import timezone
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ("name", "description", "due_date", "is_completed")
+        fields = (
+            "name",
+            "description",
+            "created_at",
+            "updated_at",
+            "due_date",
+            "is_completed",
+        )
+
+
+class TaskCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ("name", "description", "due_date")
 
     def validate_due_date(self, value):
         if timezone.now() >= value:
             raise serializers.ValidationError("Due date cannot be in the past")
         return value
-    
 
-class TaskDetailSerializer(serializers.ModelSerializer):
+
+class TaskUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ("name", "description", "created_at", "due_date", "is_completed")
+        fields = ("name", "description", "due_date", "is_completed")
 
     def validate_due_date(self, value):
         if timezone.now() >= value:

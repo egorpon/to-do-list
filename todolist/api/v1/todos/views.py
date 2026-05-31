@@ -1,9 +1,8 @@
 from rest_framework import generics
-from ....todos.models import TodoList
+from todolist.todos.models import TodoList
 from .serializers import (
     TodoListSerializer,
     TodoListCreateUpdateSerializer,
-    TodoListDetailSerializer,
 )
 # Create your views here.
 
@@ -17,7 +16,10 @@ class TodoListCreateAPIView(generics.ListCreateAPIView):
         return TodoListSerializer
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        if self.request.user.is_authenticated:
+            serializer.save(owner=self.request.user)
+        else:
+            serializer.save(session_key=self.request.session.session_key)
 
 
 class TodoListDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -26,5 +28,6 @@ class TodoListDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return TodoListDetailSerializer
+            return TodoListSerializer
         return TodoListCreateUpdateSerializer
+
