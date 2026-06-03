@@ -4,11 +4,13 @@ from .serializers import (
     TodoListSerializer,
     TodoListCreateUpdateSerializer,
 )
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 
 class TodoListCreateAPIView(generics.ListCreateAPIView):
     queryset = TodoList.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -18,8 +20,8 @@ class TodoListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         if self.request.user.is_authenticated:
             serializer.save(owner=self.request.user)
-        else:
-            serializer.save(session_key=self.request.session.session_key)
+    
+    
 
 
 class TodoListDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
