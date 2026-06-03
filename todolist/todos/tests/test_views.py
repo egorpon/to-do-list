@@ -1,0 +1,34 @@
+from django.test import TestCase
+from todolist.tasks.tests.factories import TaskFactory
+from todolist.todos.tests.factories import TodoListFactory, UserFactory
+from django.urls import reverse
+from rest_framework import status
+# Create your tests here.
+
+
+class TodoListViewTest(TestCase):
+    def setUp(self):
+        self.user = UserFactory()
+        self.todo = TodoListFactory(owner=self.user)
+        self.task = TaskFactory(todo=self.todo)
+
+        self.todo2 = TodoListFactory(owner=self.user)
+        self.task2 = TaskFactory(todo=self.todo2)
+
+    def test_authenticated_user_can_retrieve_lists(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("list"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK) 
+
+        todos = response.json()
+
+        self.assertTrue(all(todo['owner'] == self.user.id for todo in todos ))
+
+        self.client.logout()
+
+        response = self.client.get(reverse("list"))
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN) 
+

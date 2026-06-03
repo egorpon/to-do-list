@@ -14,4 +14,3 @@ class TodoListFactory(factory.django.DjangoModelFactory):
         model = TodoList
 
     name = factory.Sequence(lambda x: f'to-do-list {x}')
-    owner = factory.SubFactory(UserFactory)

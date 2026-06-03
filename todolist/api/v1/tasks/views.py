@@ -3,6 +3,8 @@ from rest_framework import generics, filters
 from todolist.tasks.models import Task
 from todolist.tasks.filters import TaskFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
+from todolist.api.v1.permissions import IsTodoOwner
 # Create your views here.
 
 
@@ -16,6 +18,7 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
     ]
     search_fields = ["name"]
     ordering_fields = ["due_date", "created_at", "is_completed"]
+    permission_classes = [IsAuthenticated, IsTodoOwner]
 
     queryset = Task.objects.none()
 
@@ -35,7 +38,8 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
 
 class TaskListDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
-    lookup_field = 'id'
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated, IsTodoOwner]
 
     def get_serializer_class(self):
         if self.request.method == "GET":
