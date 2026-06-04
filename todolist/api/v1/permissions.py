@@ -1,6 +1,5 @@
 from rest_framework.permissions import BasePermission
 from todolist.todos.models import TodoList
-from todolist.tasks.models import Task
 
 
 class IsOwner(BasePermission):
