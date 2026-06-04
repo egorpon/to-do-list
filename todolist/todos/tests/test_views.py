@@ -20,15 +20,13 @@ class TodoListViewTest(TestCase):
 
         response = self.client.get(reverse("list"))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK) 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         todos = response.json()
 
-        self.assertTrue(all(todo['owner'] == self.user.id for todo in todos ))
+        self.assertTrue(all(todo["owner"] == self.user.id for todo in todos))
 
-        self.client.logout()
 
+    def test_todo_list_view_unauthenticated(self):
         response = self.client.get(reverse("list"))
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN) 
-
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
