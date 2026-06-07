@@ -2,4 +2,11 @@ from django.contrib import admin
 from .models import Task
 # Register your models here.
 
-admin.site.register(Task)
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ["name", "is_completed", "due_date", "todo"]
+    list_display_links = ["todo"]
+    list_editable = ["is_completed"]
+    list_filter = ["is_completed"]
+    search_fields = ["name"]
