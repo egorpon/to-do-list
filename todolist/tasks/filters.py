@@ -3,16 +3,13 @@ from todolist.tasks.models import Task
 
 
 class TaskFilter(django_filters.FilterSet):
-    due_date_before = django_filters.DateFilter(
-        field_name="due_date", lookup_expr="lte"
-    )
-    due_date_after = django_filters.DateFilter(field_name="due_date", lookup_expr="gte")
+    due_date = django_filters.DateTimeFromToRangeFilter()
+
     is_completed = django_filters.BooleanFilter()
 
     class Meta:
         model = Task
         fields = (
-            "due_date_before",
-            "due_date_after",
+            "due_date",
             "is_completed",
         )

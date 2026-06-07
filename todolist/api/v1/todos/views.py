@@ -10,13 +10,16 @@ from rest_framework.pagination import PageNumberPagination
 # Create your views here.
 
 
+class TodoListPagination(PageNumberPagination):
+    page_query_param = "pagenum"
+    page_size_query_param = "size"
+    max_page_size = 10
+
+
 class TodoListCreateAPIView(generics.ListCreateAPIView):
     queryset = TodoList.objects.all()
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
-    pagination_class.page_query_param = "pagenum"
-    pagination_class.page_size_query_param = "size"
-    pagination_class.max_page_size = 10
+    pagination_class = TodoListPagination
 
     def get_serializer_class(self):
         if self.request.method == "POST":
