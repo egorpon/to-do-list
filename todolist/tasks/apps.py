@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class TasksConfig(AppConfig):
-    name = 'todolist.tasks'
+    name = "todolist.tasks"

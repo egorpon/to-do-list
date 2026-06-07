@@ -14,7 +14,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "updated_at",
             "due_date",
             "is_completed",
-            "todo_id"
+            "todo_id",
         )
 
 

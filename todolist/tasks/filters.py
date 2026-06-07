@@ -16,5 +16,3 @@ class TaskFilter(django_filters.FilterSet):
             "due_date_after",
             "is_completed",
         )
-
-    

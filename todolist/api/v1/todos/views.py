@@ -14,8 +14,8 @@ class TodoListCreateAPIView(generics.ListCreateAPIView):
     queryset = TodoList.objects.all()
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
-    pagination_class.page_query_param = 'pagenum'
-    pagination_class.page_size_query_param = 'size'
+    pagination_class.page_query_param = "pagenum"
+    pagination_class.page_size_query_param = "size"
     pagination_class.max_page_size = 10
 
     def get_serializer_class(self):
@@ -30,8 +30,6 @@ class TodoListCreateAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(owner=self.request.user)
-    
-    
 
 
 class TodoListDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -39,9 +37,7 @@ class TodoListDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
     permission_classes = [IsAuthenticated, IsOwner]
 
-
     def get_serializer_class(self):
         if self.request.method == "GET":
             return TodoListSerializer
         return TodoListCreateUpdateSerializer
-
