@@ -6,15 +6,8 @@ from .serializers import (
 )
 from rest_framework.permissions import IsAuthenticated
 from todolist.api.v1.permissions import IsOwner
-from rest_framework.pagination import PageNumberPagination
+from todolist.api.v1.pagination import TodoListPagination
 # Create your views here.
-
-
-class TodoListPagination(PageNumberPagination):
-    page_query_param = "pagenum"
-    page_size_query_param = "size"
-    max_page_size = 10
-
 
 class TodoListCreateAPIView(generics.ListCreateAPIView):
     queryset = TodoList.objects.all()
