@@ -67,7 +67,7 @@ class TodoUpdateAPI(APIView):
         serializer = TodoListCreateUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        todolist_update(data = serializer.validated_data, todo=todo)
+        todolist_update(data=serializer.validated_data, todo=todo)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
