@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from todolist.tasks.models import Task
+from todolist.api.v1.mixins import ReadOnlySerializerMixin
 from django.utils import timezone
 
 
-class TaskSerializer(serializers.ModelSerializer):
+class TaskDisplaySerializer(ReadOnlySerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = (
@@ -16,6 +17,11 @@ class TaskSerializer(serializers.ModelSerializer):
             "is_completed",
             "todo_id",
         )
+
+
+class FilterSerializer(serializers.Serializer):
+    is_completed = serializers.BooleanField(required=False)
+    due_date = serializers.DateTimeField(required=False)
 
 
 class TaskCreateSerializer(serializers.ModelSerializer):

@@ -6,7 +6,7 @@ from .views import (
     TodoUpdateAPI,
     TodoDeleteAPI,
 )
-from todolist.api.v1.tasks.views import TaskListCreateAPIView
+from todolist.api.v1.tasks.views import TaskListCreateAPIView, TaskListAPIView
 
 urlpatterns = [
     path("", view=TodoListAPI.as_view(), name="list"),
@@ -27,8 +27,8 @@ urlpatterns = [
         name="delete",
     ),
     path(
-        "<int:list_id>/tasks/",
-        view=TaskListCreateAPIView.as_view(),
+        "<int:todo_id>/tasks/",
+        view=TaskListAPIView.as_view(),
         name="todo-task-list",
     ),
 ]
