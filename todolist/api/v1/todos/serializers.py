@@ -25,11 +25,11 @@ class TodoDisplaySerializer(ReadOnlySerializerMixin, serializers.ModelSerializer
         }
 
 
-class TodoListCreateSerializer(CreateOnlySerializerMixin, serializers.Serializer):
+class TodoCreateSerializer(CreateOnlySerializerMixin, serializers.Serializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(required=False, allow_blank=True)
 
 
-class TodoListUpdateSerializer(UpdateOnlySerializerMixin, serializers.Serializer):
+class TodoUpdateSerializer(UpdateOnlySerializerMixin, serializers.Serializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(required=False, allow_blank=True)

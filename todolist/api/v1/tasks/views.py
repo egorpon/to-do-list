@@ -12,10 +12,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from todolist.api.v1.permissions import IsTodoOwner
 from todolist.tasks.selectors import tasks_list
-from todolist.api.v1.pagination import get_paginated_response, LimitOffsetPagination
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from datetime import datetime
+from todolist.api.v1.pagination import PageNumberPagination
 # Create your views here.
 
 
@@ -45,7 +45,7 @@ class TaskListAPIView(APIView):
         )
 
         return get_paginated_response(
-            pagination_class=LimitOffsetPagination,
+            pagination_class=PageNumberPagination,
             serializer_class=TaskDisplaySerializer,
             queryset=tasks,
             request=request,

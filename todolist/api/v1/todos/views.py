@@ -1,10 +1,12 @@
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from .serializers import (
-    TodoListSerializer,
-    TodoListCreateUpdateSerializer,
+    TodoDisplaySerializer,
+    TodoCreateSerializer,
+    TodoUpdateSerializer,
 )
+from rest_framework.permissions import IsAuthenticated
 from todolist.api.v1.permissions import IsOwner
-from todolist.api.v1.pagination import get_paginated_response, LimitOffsetPagination
+from todolist.api.v1.pagination import PageNumberPagination
 from todolist.todos.selectors import todos_list, get_todo
 from todolist.todos.services import todolist_create, todolist_update
 from rest_framework.response import Response
@@ -13,66 +15,78 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 # Create your views here.
 
 
-class TodoListAPI(APIView):
+class TodoListAPI(GenericAPIView):
+    output_serializer_class = TodoDisplaySerializer
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAuthenticated,)
+
     @extend_schema(
-        parameters=[
-            OpenApiParameter(name="limit", type=int, required=False),
-            OpenApiParameter(name="offset", type=int, required=False),
-        ],
-        responses={200: TodoListSerializer(many=True)},
+        responses={200: TodoDisplaySerializer(many=True)},
     )
     def get(self, request):
 
         todos = todos_list(owner=self.request.user)
+        page = self.paginate_queryset(todos)
+        if page is not None:
+            serializer = self.output_serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-        return get_paginated_response(
-            pagination_class=LimitOffsetPagination,
-            serializer_class=TodoListSerializer,
-            queryset=todos,
-            request=request,
-            view=self,
-        )
+        serializer = self.output_serializer_class(todos, many=True)
+        return Response(serializer.data)
 
 
-class TodoDetailAPI(APIView):
-    @extend_schema(responses={200: TodoListSerializer})
+class TodoDetailAPI(GenericAPIView):
+    output_serializer_class = TodoDisplaySerializer
+    permission_classes = (IsAuthenticated,)
+
+    @extend_schema(responses={200: TodoDisplaySerializer})
     def get(self, request, todo_id):
 
         todos = get_todo(todo_id=todo_id, owner=self.request.user)
 
-        serializer = TodoListSerializer(todos)
+        serializer = self.output_serializer_class(todos)
         return Response(serializer.data)
 
 
-class TodoCreateAPI(APIView):
-    @extend_schema(
-        request=TodoListCreateUpdateSerializer, responses={200: TodoListSerializer}
-    )
+class TodoCreateAPI(GenericAPIView):
+    input_serializer_class = TodoCreateSerializer
+    output_serializer_class = TodoDisplaySerializer
+    permission_classes = (IsAuthenticated,)
+
+    @extend_schema(request=TodoCreateSerializer, responses={200: TodoDisplaySerializer})
     def post(self, request):
-        serializer = TodoListCreateUpdateSerializer(data=request.data)
+        serializer = self.input_serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        todolist_create(**serializer.validated_data, owner=self.request.user)
+        todo = todolist_create(**serializer.validated_data, owner=self.request.user)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            self.output_serializer_class(todo).data, status=status.HTTP_201_CREATED
+        )
 
 
-class TodoUpdateAPI(APIView):
-    @extend_schema(
-        request=TodoListCreateUpdateSerializer, responses={200: TodoListSerializer}
-    )
+class TodoUpdateAPI(GenericAPIView):
+    input_serializer_class = TodoUpdateSerializer
+    output_serializer_class = TodoDisplaySerializer
+    permission_classes = (IsAuthenticated,)
+
+    @extend_schema(request=TodoUpdateSerializer, responses={200: TodoDisplaySerializer})
     def patch(self, request, todo_id):
         todo = get_todo(todo_id, owner=self.request.user)
 
-        serializer = TodoListCreateUpdateSerializer(data=request.data)
+        serializer = self.input_serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        todolist_update(data=serializer.validated_data, todo=todo)
+        todo = todolist_update(data=serializer.validated_data, todo=todo)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            self.output_serializer_class(todo).data, status=status.HTTP_200_OK
+        )
 
 
-class TodoDeleteAPI(APIView):
+class TodoDeleteAPI(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
     @extend_schema(responses={204: None})
     def delete(self, request, todo_id):
         todo = get_todo(todo_id, owner=self.request.user)
