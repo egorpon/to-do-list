@@ -1,13 +1,18 @@
 from rest_framework import serializers
+from todolist.todos.models import TodoList
+from todolist.api.v1.mixins import (
+    ReadOnlySerializerMixin,
+    CreateOnlySerializerMixin,
+    UpdateOnlySerializerMixin,
+)
 
 
-class TodoListSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField(max_length=255)
-    description = serializers.CharField(required=False, allow_blank=True)
-    created_at = serializers.DateTimeField()
-    owner = serializers.IntegerField(source="owner.id")
+class TodoDisplaySerializer(ReadOnlySerializerMixin, serializers.ModelSerializer):
     stats = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TodoList
+        fields = ("id", "name", "description", "created_at", "stats")
 
     def get_stats(self, obj):
 
@@ -20,6 +25,11 @@ class TodoListSerializer(serializers.Serializer):
         }
 
 
-class TodoListCreateUpdateSerializer(serializers.Serializer):
+class TodoListCreateSerializer(CreateOnlySerializerMixin, serializers.Serializer):
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField(required=False, allow_blank=True)
+
+
+class TodoListUpdateSerializer(UpdateOnlySerializerMixin, serializers.Serializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(required=False, allow_blank=True)
