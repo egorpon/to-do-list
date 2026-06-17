@@ -23,7 +23,7 @@ class TodoListViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         todos = response.json()
-
+    
         self.assertTrue(all(todo["owner"] == self.user.id for todo in todos["results"]))
 
     def test_todo_list_view_unauthenticated(self):

@@ -12,7 +12,7 @@ class TodoDisplaySerializer(ReadOnlySerializerMixin, serializers.ModelSerializer
 
     class Meta:
         model = TodoList
-        fields = ("id", "name", "description", "created_at", "stats")
+        fields = ("id", "name", "description", "created_at", "owner", "stats")
 
     def get_stats(self, obj):
 

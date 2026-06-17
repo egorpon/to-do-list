@@ -1,9 +1,8 @@
 from todolist.todos.models import TodoList
 from django.db.models.query import QuerySet
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db.models import Count, Q
-
+from rest_framework.exceptions import NotFound
 
 def _todos_queryset():
     return TodoList.objects.annotate(
@@ -29,6 +28,8 @@ def todos_list(*, owner=None) -> QuerySet[TodoList]:
 
 def get_todo(todo_id, owner) -> TodoList:
 
-    todo = get_object_or_404(_todos_queryset(), id=todo_id, owner=owner)
+    try:
+        return _todos_queryset().get(id=todo_id, owner=owner)
 
-    return todo
+    except TodoList.DoesNotExist:
+        raise NotFound()

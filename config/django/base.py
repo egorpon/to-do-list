@@ -106,6 +106,10 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
+    "TAGS":[
+        {"name":"todolist", "description":"Todo lists"},
+        {"name":"tasks", "description":"tasks"}
+    ]
 }
 
 

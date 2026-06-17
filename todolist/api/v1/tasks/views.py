@@ -1,92 +1,132 @@
 from .serializers import (
     TaskDisplaySerializer,
-    FilterSerializer,
     TaskCreateSerializer,
     TaskUpdateSerializer,
 )
 from rest_framework import generics, filters
+from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from todolist.tasks.models import Task
 from todolist.tasks.filters import TaskFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from todolist.api.v1.permissions import IsTodoOwner
-from todolist.tasks.selectors import tasks_list
+from todolist.tasks.selectors import tasks_list, get_task
+from todolist.tasks.services import task_create, task_update
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from datetime import datetime
 from todolist.api.v1.pagination import PageNumberPagination
+from rest_framework.response import Response
 # Create your views here.
 
 
-class TaskListAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsTodoOwner]
+class TaskListAPI(GenericAPIView):
+    output_serializer_class = TaskDisplaySerializer
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAuthenticated, IsTodoOwner)
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_class = TaskFilter
+    search_fields = ["name"]
+    ordering_fields = ["name", "due_date", "created_at", "is_completed"]
 
     @extend_schema(
+        tags=["tasks"],
         parameters=[
-            OpenApiParameter(name="limit", type=int, required=False),
-            OpenApiParameter(name="offset", type=int, required=False),
-            OpenApiParameter(name="search", type=str, required=False),
-            OpenApiParameter(name="ordering", type=str, required=False),
             OpenApiParameter(name="is_completed", type=bool, required=False),
             OpenApiParameter(name="due_date_after", type=datetime, required=False),
             OpenApiParameter(name="due_date_before", type=datetime, required=False),
         ],
-        responses={200: TaskDisplaySerializer(many=True)},
+        responses={status.HTTP_200_OK: TaskDisplaySerializer(many=True)},
     )
     def get(self, request, todo_id):
-        filters_serializer = FilterSerializer(data=request.query_params)
-        filters_serializer.is_valid(raise_exception=True)
-
         tasks = tasks_list(
-            filters=filters_serializer.validated_data,
             todo_id=todo_id,
-            user=self.request.user,
+            user=request.user,
         )
 
-        return get_paginated_response(
-            pagination_class=PageNumberPagination,
-            serializer_class=TaskDisplaySerializer,
-            queryset=tasks,
-            request=request,
-            view=self,
+        tasks = self.filter_queryset(tasks)
+
+        page = self.paginate_queryset(tasks)
+        if page is not None:
+            serializer = self.output_serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.output_serializer_class(tasks, many=True)
+        return Response(serializer.data)
+
+
+class TaskDetailAPI(GenericAPIView):
+    output_serializer_class = TaskDisplaySerializer
+    permission_classes = (IsAuthenticated, IsTodoOwner)
+
+    @extend_schema(
+        tags=["tasks"],
+        responses={status.HTTP_200_OK: TaskDisplaySerializer},
+    )
+    def get(self, request, task_id):
+
+        tasks = get_task(
+            task_id=task_id,
+            user=request.user,
         )
 
+        serializer = self.output_serializer_class(tasks)
+        return Response(serializer.data)
 
-class TaskListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = TaskDisplaySerializer
-    filterset_class = TaskFilter
-    filter_backends = [
-        filters.SearchFilter,
-        filters.OrderingFilter,
-        DjangoFilterBackend,
-    ]
-    search_fields = ["name"]
-    ordering_fields = ["due_date", "created_at", "is_completed"]
+
+class TaskCreateAPI(GenericAPIView):
+    input_serializer_class = TaskCreateSerializer
+    output_serializer_class = TaskDisplaySerializer
     permission_classes = [IsAuthenticated, IsTodoOwner]
 
-    queryset = Task.objects.none()
+    @extend_schema(
+        tags=["tasks"],
+        request=TaskCreateSerializer,
+        responses={status.HTTP_201_CREATED: TaskDisplaySerializer()},
+    )
+    def post(self, request, todo_id):
+        serializer = self.input_serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    def get_queryset(self):
-        todo_list_id = self.kwargs["list_id"]
-        return Task.objects.filter(todo__owner=self.request.user, todo=todo_list_id)
+        task = task_create(**serializer.validated_data, todo_id=todo_id)
 
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return TaskCreateSerializer
-        return TaskDisplaySerializer
-
-    def perform_create(self, serializer):
-        todo_list_id = self.kwargs["list_id"]
-        serializer.save(todo_id=todo_list_id)
+        return Response(self.output_serializer_class(task).data)
 
 
-class TaskListDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Task.objects.all()
-    lookup_field = "id"
+class TaskUpdateAPI(GenericAPIView):
+    input_serializer_class = TaskUpdateSerializer
+    output_serializer_class = TaskDisplaySerializer
     permission_classes = [IsAuthenticated, IsTodoOwner]
 
-    def get_serializer_class(self):
-        if self.request.method == "GET":
-            return TaskDisplaySerializer
-        return TaskUpdateSerializer
+    @extend_schema(
+        tags=["tasks"],
+        request=TaskUpdateSerializer,
+        responses={201: TaskDisplaySerializer()},
+    )
+    def patch(self, request, task_id):
+        task = get_task(task_id=task_id, user=request.user)
+        serializer = self.input_serializer_class(
+            instance=task, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+
+        task = task_update(data=serializer.validated_data, task=task)
+
+        return Response(self.output_serializer_class(task).data)
+
+
+class TaskDeleteAPI(GenericAPIView):
+    permission_classes = (IsAuthenticated, IsTodoOwner)
+
+    @extend_schema(tags=["tasks"], responses={status.HTTP_204_NO_CONTENT: None})
+    def delete(self, request, task_id):
+        task = get_task(task_id=task_id, user=request.user)
+
+        task.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
