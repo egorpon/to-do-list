@@ -36,11 +36,6 @@ class TaskListAPI(GenericAPIView):
 
     @extend_schema(
         tags=["tasks"],
-        parameters=[
-            OpenApiParameter(name="is_completed", type=bool, required=False),
-            OpenApiParameter(name="due_date_after", type=datetime, required=False),
-            OpenApiParameter(name="due_date_before", type=datetime, required=False),
-        ],
         responses={status.HTTP_200_OK: TaskDisplaySerializer(many=True)},
     )
     def get(self, request, todo_id):
@@ -52,12 +47,9 @@ class TaskListAPI(GenericAPIView):
         tasks = self.filter_queryset(tasks)
 
         page = self.paginate_queryset(tasks)
-        if page is not None:
-            serializer = self.output_serializer_class(page, many=True)
-            return self.get_paginated_response(serializer.data)
 
-        serializer = self.output_serializer_class(tasks, many=True)
-        return Response(serializer.data)
+        serializer = self.output_serializer_class(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class TaskDetailAPI(GenericAPIView):

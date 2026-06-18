@@ -7,22 +7,20 @@ from todolist.api.v1.mixins import (
 )
 
 
+class TodoStatsDisplaySerializer(ReadOnlySerializerMixin, serializers.Serializer):
+    tasks_count = serializers.IntegerField()
+    tasks_done = serializers.IntegerField()
+    tasks_pending = serializers.IntegerField()
+    upcoming_tasks = serializers.IntegerField()
+    overdue_tasks = serializers.IntegerField()
+
+
 class TodoDisplaySerializer(ReadOnlySerializerMixin, serializers.ModelSerializer):
-    stats = serializers.SerializerMethodField()
+    stats = TodoStatsDisplaySerializer(source="*")
 
     class Meta:
         model = TodoList
         fields = ("id", "name", "description", "created_at", "owner", "stats")
-
-    def get_stats(self, obj):
-
-        return {
-            "tasks_count": getattr(obj, "tasks_count", 0),
-            "tasks_done": getattr(obj, "tasks_done", 0),
-            "tasks_pending": getattr(obj, "tasks_pending", 0),
-            "upcoming_tasks": getattr(obj, "upcoming_tasks", 0),
-            "overdue_tasks": getattr(obj, "overdue_tasks", 0),
-        }
 
 
 class TodoCreateSerializer(CreateOnlySerializerMixin, serializers.Serializer):
