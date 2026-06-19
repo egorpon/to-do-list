@@ -2,7 +2,7 @@ from todolist.todos.models import TodoList
 from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.db.models import Count, Q
-from rest_framework.exceptions import NotFound
+from todolist.api.v1.exceptions import TodoNotFound
 
 def _todos_queryset():
     return TodoList.objects.annotate(
@@ -32,4 +32,4 @@ def get_todo(todo_id, owner) -> TodoList:
         return _todos_queryset().get(id=todo_id, owner=owner)
 
     except TodoList.DoesNotExist:
-        raise NotFound()
+        raise TodoNotFound()
