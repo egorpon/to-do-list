@@ -3,6 +3,8 @@ from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.db.models import Count, Q
 from todolist.api.v1.exceptions import TodoNotFound
+from django.contrib.auth.models import User
+
 
 def _todos_queryset():
     return TodoList.objects.annotate(
@@ -17,16 +19,15 @@ def _todos_queryset():
             "tasks",
             filter=Q(tasks__is_completed=False, tasks__due_date__lt=timezone.now()),
         ),
-    )
+    ).order_by("-created_at")
 
 
 def todos_list(*, owner=None) -> QuerySet[TodoList]:
 
     return _todos_queryset().filter(owner=owner)
-    
 
 
-def get_todo(todo_id, owner) -> TodoList:
+def get_todo(todo_id: int, owner: User) -> TodoList:
 
     try:
         return _todos_queryset().get(id=todo_id, owner=owner)
