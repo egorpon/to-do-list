@@ -2,7 +2,7 @@ from todolist.todos.models import TodoList
 from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.db.models import Count, Q
-from todolist.api.v1.exceptions import TodoNotFound
+from todolist.api.v1.exceptions import TodoAppBaseError
 from django.contrib.auth.models import User
 
 
@@ -33,4 +33,6 @@ def get_todo(todo_id: int, owner: User) -> TodoList:
         return _todos_queryset().get(id=todo_id, owner=owner)
 
     except TodoList.DoesNotExist:
-        raise TodoNotFound()
+        raise TodoAppBaseError(
+            message="Todo list not found.", extra={"todo_id": todo_id, "user": owner.id}
+        )
