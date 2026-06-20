@@ -13,5 +13,5 @@ def get_task(task_id: int, user: User) -> Task:
     try:
         return Task.objects.get(id=task_id, todo__owner=user)
     except Task.DoesNotExist:
-        raise TodoAppBaseError(message="Task not found.", extra={"task_id": task_id, "user": user.id}
+        raise TodoAppBaseError(message="Task not found.", extra={"task_id": task_id, "user_id": user.id}
         )

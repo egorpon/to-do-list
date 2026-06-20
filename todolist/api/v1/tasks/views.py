@@ -24,7 +24,10 @@ from rest_framework.response import Response
 class TaskListAPI(GenericAPIView):
     output_serializer_class = TaskDisplaySerializer
     pagination_class = PageNumberPagination
-    permission_classes = (IsAuthenticated, IsTodoOwner)
+    permission_classes = (
+        IsAuthenticated,
+        IsTodoOwner,
+    )
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -54,7 +57,10 @@ class TaskListAPI(GenericAPIView):
 
 class TaskDetailAPI(GenericAPIView):
     output_serializer_class = TaskDisplaySerializer
-    permission_classes = (IsAuthenticated, IsTodoOwner)
+    permission_classes = (
+        IsAuthenticated,
+        IsTodoOwner,
+    )
 
     @extend_schema(
         tags=["tasks"],
@@ -74,7 +80,10 @@ class TaskDetailAPI(GenericAPIView):
 class TaskCreateAPI(GenericAPIView):
     input_serializer_class = TaskCreateSerializer
     output_serializer_class = TaskDisplaySerializer
-    permission_classes = [IsAuthenticated, IsTodoOwner]
+    permission_classes = (
+        IsAuthenticated,
+        IsTodoOwner,
+    )
 
     @extend_schema(
         tags=["tasks"],
@@ -93,7 +102,10 @@ class TaskCreateAPI(GenericAPIView):
 class TaskUpdateAPI(GenericAPIView):
     input_serializer_class = TaskUpdateSerializer
     output_serializer_class = TaskDisplaySerializer
-    permission_classes = [IsAuthenticated, IsTodoOwner]
+    permission_classes = (
+        IsAuthenticated,
+        IsTodoOwner,
+    )
 
     @extend_schema(
         tags=["tasks"],
@@ -113,7 +125,10 @@ class TaskUpdateAPI(GenericAPIView):
 
 
 class TaskDeleteAPI(GenericAPIView):
-    permission_classes = (IsAuthenticated, IsTodoOwner)
+    permission_classes = (
+        IsAuthenticated,
+        IsTodoOwner,
+    )
 
     @extend_schema(tags=["tasks"], responses={status.HTTP_204_NO_CONTENT: None})
     def delete(self, request, task_id):

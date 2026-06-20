@@ -12,7 +12,7 @@ class TaskInline(admin.StackedInline):
 @admin.register(TodoList)
 class TodoListAdmin(admin.ModelAdmin):
     inlines = [TaskInline]
-    list_display = ["name", "owner"]
+    list_display = ["id", "name", "owner"]
     list_filter = ["owner"]
     search_fields = ["name"]
 

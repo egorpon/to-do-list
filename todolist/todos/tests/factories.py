@@ -7,7 +7,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = factory.Sequence(lambda x: f"user_{x}")
+    username = factory.Faker("user_name")
 
 
 class TodoListFactory(factory.django.DjangoModelFactory):

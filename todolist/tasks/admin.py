@@ -5,8 +5,7 @@ from .models import Task
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ["name", "is_completed", "due_date", "todo"]
-    list_display_links = ["todo"]
-    list_editable = ["is_completed"]
+    list_display = ["id", "name", "is_completed", "due_date", "todo"]
+    list_display_links = ["id", "todo"]
     list_filter = ["is_completed"]
     search_fields = ["name"]

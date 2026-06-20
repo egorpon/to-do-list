@@ -2,13 +2,6 @@ from rest_framework.permissions import BasePermission
 from todolist.todos.models import TodoList
 
 
-class IsOwner(BasePermission):
-    message = "You do not have permission to perfom this action."
-
-    def has_object_permission(self, request, view, obj):
-        return obj.owner == request.user
-
-
 class IsTodoOwner(BasePermission):
     message = "You do not have permission to perfom this action."
 

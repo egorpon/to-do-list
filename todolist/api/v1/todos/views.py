@@ -11,6 +11,7 @@ from todolist.todos.services import todolist_create, todolist_update
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
+from todolist.api.v1.permissions import IsTodoOwner
 # Create your views here.
 
 
@@ -37,7 +38,10 @@ class TodoListAPI(GenericAPIView):
 
 class TodoDetailAPI(GenericAPIView):
     output_serializer_class = TodoDisplaySerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,
+        IsTodoOwner,
+    )
 
     @extend_schema(
         tags=["todolist"], responses={status.HTTP_200_OK: TodoDisplaySerializer}
@@ -74,7 +78,7 @@ class TodoCreateAPI(GenericAPIView):
 class TodoUpdateAPI(GenericAPIView):
     input_serializer_class = TodoUpdateSerializer
     output_serializer_class = TodoDisplaySerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsTodoOwner)
 
     @extend_schema(
         tags=["todolist"],
@@ -95,7 +99,10 @@ class TodoUpdateAPI(GenericAPIView):
 
 
 class TodoDeleteAPI(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,
+        IsTodoOwner,
+    )
 
     @extend_schema(tags=["todolist"], responses={status.HTTP_204_NO_CONTENT: None})
     def delete(self, request, todo_id):
