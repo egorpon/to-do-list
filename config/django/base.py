@@ -98,7 +98,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
-    "EXCEPTION_HANDLER": "todolist.api.v1.handlers.custom_exception_handler"
+    "EXCEPTION_HANDLER": "todolist.api.v1.handlers.custom_exception_handler",
 }
 
 SPECTACULAR_SETTINGS = {
@@ -107,10 +107,10 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
-    "TAGS":[
-        {"name":"todolist", "description":"Todo lists"},
-        {"name":"tasks", "description":"tasks"}
-    ]
+    "TAGS": [
+        {"name": "todolist", "description": "Todo lists"},
+        {"name": "tasks", "description": "tasks"},
+    ],
 }
 
 

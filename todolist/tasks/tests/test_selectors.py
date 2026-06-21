@@ -5,7 +5,7 @@ from todolist.todos.tests.factories import UserFactory, TodoListFactory
 from todolist.tasks.tests.factories import TaskFactory
 
 
-class TodoSelectorTest(TestCase):
+class TaskSelectorTest(TestCase):
     def setUp(self):
         self.user = UserFactory()
         self.other_user = UserFactory()

@@ -3,10 +3,8 @@ from .serializers import (
     TaskCreateSerializer,
     TaskUpdateSerializer,
 )
-from rest_framework import generics, filters
+from rest_framework import filters
 from rest_framework.generics import GenericAPIView
-from rest_framework.views import APIView
-from todolist.tasks.models import Task
 from todolist.tasks.filters import TaskFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
@@ -14,8 +12,7 @@ from todolist.api.v1.permissions import IsTodoOwner
 from todolist.tasks.selectors import tasks_list, get_task
 from todolist.tasks.services import task_create, task_update
 from rest_framework import status
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from datetime import datetime
+from drf_spectacular.utils import extend_schema
 from todolist.api.v1.pagination import PageNumberPagination
 from rest_framework.response import Response
 # Create your views here.

@@ -34,5 +34,6 @@ def get_todo(todo_id: int, owner: User) -> TodoList:
 
     except TodoList.DoesNotExist:
         raise TodoAppBaseError(
-            message="Todo list not found.", extra={"todo_id": todo_id, "user_id": owner.id}
+            message="Todo list not found.",
+            extra={"todo_id": todo_id, "user_id": owner.id},
         )

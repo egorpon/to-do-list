@@ -16,5 +16,5 @@ urlpatterns = [
         "<int:task_id>/delete",
         view=TaskDeleteAPI.as_view(),
         name="task-delete",
-    )
+    ),
 ]
