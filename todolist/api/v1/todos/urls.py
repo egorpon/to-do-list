@@ -9,22 +9,22 @@ from .views import (
 from todolist.api.v1.tasks.views import TaskListAPI, TaskCreateAPI
 
 urlpatterns = [
-    path("", view=TodoListAPI.as_view(), name="list"),
+    path("", view=TodoListAPI.as_view(), name="todo-list"),
     path(
         "<int:todo_id>/",
         view=TodoDetailAPI.as_view(),
-        name="detail",
+        name="todo-detail",
     ),
-    path("create/", view=TodoCreateAPI.as_view(), name="create"),
+    path("create/", view=TodoCreateAPI.as_view(), name="todo-create"),
     path(
         "<int:todo_id>/update/",
         view=TodoUpdateAPI.as_view(),
-        name="update",
+        name="todo-update",
     ),
     path(
         "<int:todo_id>/delete/",
         view=TodoDeleteAPI.as_view(),
-        name="delete",
+        name="todo-delete",
     ),
     path(
         "<int:todo_id>/tasks/",
@@ -34,6 +34,6 @@ urlpatterns = [
     path(
         "<int:todo_id>/tasks/create",
         view=TaskCreateAPI.as_view(),
-        name="todo-task-list",
+        name="todo-task-create",
     ),
 ]

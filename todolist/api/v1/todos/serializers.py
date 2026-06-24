@@ -8,11 +8,11 @@ from todolist.api.v1.mixins import (
 
 
 class TodoStatsDisplaySerializer(ReadOnlySerializerMixin, serializers.Serializer):
-    tasks_count = serializers.IntegerField()
-    tasks_done = serializers.IntegerField()
-    tasks_pending = serializers.IntegerField()
-    upcoming_tasks = serializers.IntegerField()
-    overdue_tasks = serializers.IntegerField()
+    tasks_count = serializers.IntegerField(default=0)
+    tasks_done = serializers.IntegerField(default=0)
+    tasks_pending = serializers.IntegerField(default=0)
+    upcoming_tasks = serializers.IntegerField(default=0)
+    overdue_tasks = serializers.IntegerField(default=0)
 
 
 class TodoDisplaySerializer(ReadOnlySerializerMixin, serializers.ModelSerializer):
