@@ -1,6 +1,6 @@
 import factory
 from todolist.tasks.models import Task
-from todolist.todos.models import TodoList
+from todolist.todos.tests.factories import TodoListFactory
 
 
 class TaskFactory(factory.django.DjangoModelFactory):
@@ -11,4 +11,4 @@ class TaskFactory(factory.django.DjangoModelFactory):
     description = ""
     due_date = None
     is_completed = False
-    todo = factory.SubFactory(TodoList)
+    todo = factory.SubFactory(TodoListFactory)

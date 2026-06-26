@@ -29,11 +29,11 @@ urlpatterns = [
     path(
         "<int:todo_id>/tasks/",
         view=TaskListAPI.as_view(),
-        name="todo-task-list",
+        name="task-list",
     ),
     path(
         "<int:todo_id>/tasks/create",
         view=TaskCreateAPI.as_view(),
-        name="todo-task-create",
+        name="task-create",
     ),
 ]

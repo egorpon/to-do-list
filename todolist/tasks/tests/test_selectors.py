@@ -22,13 +22,10 @@ class TaskSelectorTest(TestCase):
         self.assertQuerySetEqual(tasks, [])
 
     def test_get_task_returns_task_if_found_and_user_is_todo_owner(self):
-        task = get_task(task_id=self.task_1.id, user=self.user)
+        task = get_task(task_id=self.task_1.id)
         self.assertEqual(task.id, self.task_1.id)
 
     def test_get_task_raises_error_if_task_not_found(self):
         with self.assertRaises(TodoAppBaseError):
-            get_task(task_id=999, user=self.user)
+            get_task(task_id=999)
 
-    def test_get_task_raises_error_if_user_is_not_owner(self):
-        with self.assertRaises(TodoAppBaseError):
-            get_task(task_id=self.task_1.id, user=self.other_user)

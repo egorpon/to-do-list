@@ -6,13 +6,15 @@ from todolist.api.v1.exceptions import TodoAppBaseError
 
 def tasks_list(*, todo_id: int, user: User) -> QuerySet[Task]:
 
-    return Task.objects.filter(todo_id=todo_id, todo__owner=user)
+    return Task.objects.filter(todo_id=todo_id, todo__owner=user).order_by(
+        "-created_at"
+    )
 
 
-def get_task(task_id: int, user: User) -> Task:
+def get_task(task_id: int) -> Task:
     try:
-        return Task.objects.get(id=task_id, todo__owner=user)
+        return Task.objects.get(id=task_id)
     except Task.DoesNotExist:
         raise TodoAppBaseError(
-            message="Task not found.", extra={"task_id": task_id, "user_id": user.id}
+            message="Task not found.", extra={"task_id": task_id}
         )

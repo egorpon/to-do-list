@@ -65,12 +65,9 @@ class TaskDetailAPI(GenericAPIView):
     )
     def get(self, request, task_id):
 
-        tasks = get_task(
-            task_id=task_id,
-            user=request.user,
-        )
-
-        serializer = self.output_serializer_class(tasks)
+        task = get_task(task_id=task_id)
+        self.check_object_permissions(request, task)
+        serializer = self.output_serializer_class(task)
         return Response(serializer.data)
 
 
@@ -93,7 +90,9 @@ class TaskCreateAPI(GenericAPIView):
 
         task = task_create(**serializer.validated_data, todo_id=todo_id)
 
-        return Response(self.output_serializer_class(task).data)
+        return Response(
+            self.output_serializer_class(task).data, status=status.HTTP_201_CREATED
+        )
 
 
 class TaskUpdateAPI(GenericAPIView):
@@ -110,7 +109,8 @@ class TaskUpdateAPI(GenericAPIView):
         responses={201: TaskDisplaySerializer()},
     )
     def patch(self, request, task_id):
-        task = get_task(task_id=task_id, user=request.user)
+        task = get_task(task_id=task_id)
+        self.check_object_permissions(request, task)
         serializer = self.input_serializer_class(
             instance=task, data=request.data, partial=True
         )
@@ -129,8 +129,8 @@ class TaskDeleteAPI(GenericAPIView):
 
     @extend_schema(tags=["tasks"], responses={status.HTTP_204_NO_CONTENT: None})
     def delete(self, request, task_id):
-        task = get_task(task_id=task_id, user=request.user)
-
+        task = get_task(task_id=task_id)
+        self.check_object_permissions(request, task)
         task.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
