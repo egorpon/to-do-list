@@ -28,4 +28,3 @@ class TaskSelectorTest(TestCase):
     def test_get_task_raises_error_if_task_not_found(self):
         with self.assertRaises(TodoAppBaseError):
             get_task(task_id=999)
-

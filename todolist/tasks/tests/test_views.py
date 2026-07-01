@@ -63,9 +63,9 @@ class TaskListViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         tasks = response.data["results"]
-        
+
         self.assertEqual(len(tasks), 1)
-        self.assertEqual(tasks[0]["due_date"],"2026-06-10T00:00:00Z")
+        self.assertEqual(tasks[0]["due_date"], "2026-06-10T00:00:00Z")
 
 
 class TaskDetailViewTest(APITestCase):
