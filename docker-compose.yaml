@@ -9,6 +9,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     env_file:
       - .env
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
   
   rabbitmq:
     image: rabbitmq:management
