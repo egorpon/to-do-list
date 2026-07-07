@@ -25,10 +25,10 @@ def get_tasks_stats(*, user: User) -> dict:
     today = timezone.now()
 
     return Task.objects.filter(todo__owner=user).aggregate(
-        overdue_count=Count("id", filter=Q(due_date__lt=today, is_completed=False)),
-        upcoming_count=Count("id", filter=Q(due_date__gte=today, is_completed=False)),
-        completed_count=Count("id", filter=Q(is_completed=True)),
-        total_count=Count("id"),
+        overdue=Count("id", filter=Q(due_date__lt=today, is_completed=False)),
+        upcoming=Count("id", filter=Q(due_date__gte=today, is_completed=False)),
+        completed=Count("id", filter=Q(is_completed=True)),
+        total=Count("id"),
     )
 
 
