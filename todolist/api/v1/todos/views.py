@@ -7,7 +7,7 @@ from .serializers import (
 from rest_framework.permissions import IsAuthenticated
 from todolist.api.v1.pagination import PageNumberPagination
 from todolist.todos.selectors import todos_list, get_todo
-from todolist.todos.services import todolist_create, todolist_update
+from todolist.todos.services.crud import todolist_create, todolist_update
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema

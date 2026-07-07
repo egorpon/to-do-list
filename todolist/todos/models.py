@@ -20,9 +20,9 @@ class TodoList(models.Model):
 
 class ReminderLog(models.Model):
     class Status(models.TextChoices):
-        PENDING = "PENDING"
-        SUCCESS = "SUCCESS"
-        FAILED = "FAILED"
+        PENDING = "PENDING", "Pending"
+        SUCCESS = "SUCCESS", "Success"
+        FAILED = "FAILED", "Failed"
 
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="reminder_logs"

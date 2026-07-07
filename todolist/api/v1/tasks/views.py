@@ -10,7 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from todolist.api.v1.permissions import IsTodoOwner
 from todolist.tasks.selectors import tasks_list, get_task
-from todolist.tasks.services import task_create, task_update
+from todolist.tasks.services.crud import task_create, task_update
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from todolist.api.v1.pagination import PageNumberPagination

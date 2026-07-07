@@ -1,5 +1,5 @@
 from django.test import TestCase
-from todolist.tasks.services import task_create, task_update
+from todolist.tasks.services.crud import task_create, task_update
 from todolist.todos.tests.factories import UserFactory, TodoListFactory
 from todolist.tasks.tests.factories import TaskFactory
 from todolist.tasks.models import Task
