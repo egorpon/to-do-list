@@ -1,7 +1,9 @@
 from todolist.todos.models import TodoList, User
 from django.db import transaction
 from typing import Any
-from todos.selectors import get_users_with_upcoming_tasks
+from todolist.todos.models import ReminderLog
+from django.utils import timezone
+from django.core.mail import send_mail
 
 
 @transaction.atomic
@@ -28,6 +30,23 @@ def todolist_update(*, data: dict[str, Any], todo: TodoList) -> TodoList:
 
 
 def send_planning_reminders() -> None:
-    users = get_users_with_upcoming_tasks()
-    for user in users:
-        pass
+        log, created = ReminderLog.objects.get_or_create(
+            created_at=timezone.localdate(),
+            defaults={"status": ReminderLog.Status.PENDING},
+        )
+
+        # if not created and log.status != ReminderLog.Status.FAILED:
+        #     continue
+
+        try:
+            if log.status == ReminderLog.Status.FAILED:
+                log.status = ReminderLog.Status.PENDING
+                log.save()
+            
+        except:
+            pass
+
+def send_reminder_email(user: User) -> None:
+    body = {
+        ""
+    }

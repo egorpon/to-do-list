@@ -10,8 +10,8 @@ class Task(models.Model):
     description = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    due_date = models.DateTimeField(blank=True, null=True)
-    is_completed = models.BooleanField(default=False)
+    due_date = models.DateTimeField(blank=True, null=True, db_index=True)
+    is_completed = models.BooleanField(default=False, db_index=True)
 
     todo = models.ForeignKey(TodoList, on_delete=models.CASCADE, related_name="tasks")
 

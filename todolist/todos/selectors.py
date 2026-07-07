@@ -37,10 +37,3 @@ def get_todo(todo_id: int, owner: User) -> TodoList:
             message="Todo list not found.",
             extra={"todo_id": todo_id, "user_id": owner.id},
         )
-
-
-def get_users_with_upcoming_tasks() -> QuerySet[User]:
-    return User.objects.filter(
-        todolists__tasks__is_completed=False,
-        todolists__tasks__due_date__gt=timezone.now(),
-    )
