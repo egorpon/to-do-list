@@ -3,5 +3,3 @@ class TodoAppBaseError(Exception):
         self.extra = extra or {}
         super().__init__(message)
 
-
-class Trans

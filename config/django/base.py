@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "todolist.todos",
     "todolist.tasks",
-    "django_celery_beat"
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -82,7 +82,7 @@ DATABASES = {
         "NAME": env.str("POSTGRES_DB"),
         "USER": env.str("POSTGRES_USER"),
         "PASSWORD": env.str("POSTGRES_PASSWORD"),
-        "HOST": "localhost",  # Use the server address if not local
+        "HOST": env.str("POSTGRES_HOST"),
         "PORT": "5432",
     }
 }

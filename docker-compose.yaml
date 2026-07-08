@@ -17,7 +17,7 @@ services:
       - 8080:8080
   
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.13-management
     restart: always
     ports:
       - 5672:5672
@@ -36,6 +36,7 @@ services:
       command: python manage.py runserver 0.0.0.0:8000
       volumes:
         - .:/app
+        - /app/.venv
       ports:
         - 8000:8000
       env_file:
@@ -50,6 +51,7 @@ services:
     command: celery -A todolist.async_tasks worker --loglevel=info --concurrency 8
     volumes:
       - .:/app
+      - /app/.venv
     env_file:
       - .env
     depends_on:
@@ -62,6 +64,7 @@ services:
     command: celery -A todolist.async_tasks beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - .:/app
+      - /app/.venv
     env_file:
       - .env
     depends_on:
