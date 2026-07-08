@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from smtplib import SMTPException
 
 
 def send_daily_summary() -> None:
@@ -18,7 +19,7 @@ def send_daily_summary() -> None:
     for user in users:
         log, created = ReminderLog.objects.get_or_create(
             user=user,
-            created_at=timezone.localdate(),
+            date=timezone.localdate(),
             defaults={"status": ReminderLog.Status.PENDING},
         )
 
@@ -53,9 +54,15 @@ def send_daily_summary() -> None:
             log.status = ReminderLog.Status.SUCCESS
             log.save()
 
-        except Exception as exc:
+        except  SMTPException as exc:
             log.status = ReminderLog.Status.FAILED
+            log.error_message = str(exc)
             log.save()
+            has_error = True
+
+    if has_error:
+        raise SMTPException("SMTP server connection failed.")
+
 
 
 def build_summary_email(
@@ -65,7 +72,7 @@ def build_summary_email(
     overdue_tasks,
     upcoming_tasks_this_week,
     completed_tasks_this_week,
-) -> tuple[str,str]:
+) -> tuple[str, str]:
     context = {
         "date": timezone.localdate(),
         "username": user.username,

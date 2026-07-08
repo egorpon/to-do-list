@@ -112,7 +112,7 @@
                                   <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                     <tr>
                                       <td class="pad" style="width:100%;" align="center">
-                                        <h1 style="margin: 0; color: #7747FF; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 46px;"><span class="tinyMce-placeholder" style="word-break: break-word;">Hello,</span></h1>
+                                        <h1 style="margin: 0; color: #7747FF; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 46px;"><span class="tinyMce-placeholder" style="word-break: break-word;">Hello, {{username}}</span></h1>
                                       </td>
                                     </tr>
                                   </table>
@@ -141,7 +141,7 @@
                                   <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                     <tr>
                                       <td class="pad" style="width:100%;" align="center">
-                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 14px;"><span class="tinyMce-placeholder" style="word-break: break-word;">Date of the day</span></h6>
+                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 14px;"><span class="tinyMce-placeholder" style="word-break: break-word;">{{date}}</span></h6>
                                       </td>
                                     </tr>
                                   </table>
@@ -189,10 +189,10 @@
                                           </thead>
                                           <tbody style="vertical-align: top; font-size: 16px; line-height: 1.2; mso-line-height-alt: 19px;">
                                             <tr>
-                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">1</td>
-                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">2</td>
-                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">3</td>
-                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">4</td>
+                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">{{stats.overdue}}</td>
+                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">{{stats.upcoming}}</td>
+                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">{{stats.completed}}</td>
+                                              <td width="25%" style="padding: 10px; word-break: break-word; vertical-align: top; border-top: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; border-left: 1px solid #dddddd;">{{stats.total}}</td>
                                             </tr>
                                           </tbody>
                                         </table>
@@ -253,7 +253,9 @@
                                   <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                     <tr>
                                       <td class="pad" style="width:100%;" align="center">
-                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 17px;"><span class="tinyMce-placeholder" style="word-break: break-word;">Overdue task</span></h6>
+                                        {% for task in overdue_tasks %}
+                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 17px;"><span class="tinyMce-placeholder" style="word-break: break-word;">{{task}}</span></h6>
+                                        {% endfor %}
                                       </td>
                                     </tr>
                                   </table>
@@ -275,12 +277,13 @@
                     <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
                       <tbody>
                         <tr>
-                          <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;">
+                          <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;  font-weight: 400; text-align: left; vertical-align: top;">
                             <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                               <tr>
                                 <td class="col-pad" style="padding-bottom:5px;padding-top:5px;">
                                   <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                     <tr>
+                                      
                                       <td class="pad" style="width:100%;" align="center">
                                         <h4 style="margin: 0; color: #7747ff; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 22px;"><span class="tinyMce-placeholder" style="word-break: break-word;">Coming up this week</span></h4>
                                       </td>
@@ -301,7 +304,7 @@
               <tbody>
                 <tr>
                   <td>
-                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-bottom: 3px solid transparent; border-left: 5px solid #7747ff; border-radius: 9px; border-right: 3px solid transparent; border-top: 3px solid transparent; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-bottom: 3px solid transparent;background-color: #f5f5f5; border-left: 5px solid #7747ff; border-radius: 9px; border-right: 3px solid transparent; border-top: 3px solid transparent; color: #000000; width: 600px; margin: 0 auto;" width="600">
                       <tbody>
                         <tr>
                           <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;">
@@ -310,8 +313,10 @@
                                 <td class="col-pad" style="padding-bottom:5px;padding-top:5px;">
                                   <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                     <tr>
+                                      {% for task in  upcoming_tasks_this_week%}
                                       <td class="pad" style="width:100%;" align="center">
-                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 17px;"><span class="tinyMce-placeholder" style="word-break: break-word;">I'm a new title block</span></h6>
+                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 17px;"><span class="tinyMce-placeholder" style="word-break: break-word;">{{task}}</span></h6>
+                                      {% endfor %}
                                       </td>
                                     </tr>
                                   </table>
@@ -368,8 +373,12 @@
                                 <td class="col-pad" style="padding-bottom:5px;padding-top:5px;">
                                   <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                     <tr>
+                                      {% for task in  completed_tasks_this_week %}
+                                        
+                                      
                                       <td class="pad" style="width:100%;" align="center">
-                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 17px;"><span class="tinyMce-placeholder" style="word-break: break-word;">I'm a new title block</span></h6>
+                                        <h6 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; line-height: 1.2; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 17px;"><span class="tinyMce-placeholder" style="word-break: break-word;">{{task}}</span></h6>
+                                        {% endfor %}
                                       </td>
                                     </tr>
                                   </table>
@@ -384,47 +393,7 @@
                 </tr>
               </tbody>
             </table>
-            <table class="row row-10" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
-              <tbody>
-                <tr>
-                  <td>
-                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
-                      <tbody>
-                        <tr>
-                          <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;">
-                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                              <tr>
-                                <td class="col-pad" style="padding-bottom:5px;padding-top:5px;">
-                                  <table class="icons_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; text-align: center; line-height: 0;">
-                                    <tr>
-                                      <td class="pad" style="vertical-align: middle; color: #140231; font-family: inherit; font-size: 14px; font-weight: 400; letter-spacing: 0px;" align="center">
-                                        <!-- [if vml]><table align="center" cellpadding="0" cellspacing="0" role="presentation" style="display:inline-block;padding-left:0px;padding-right:0px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" ><![endif] -->
-                                        <!-- [if !vml]><! -->
-                                        <table class="icons-inner" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block; padding-left: 0px; padding-right: 0px;" cellpadding="0" cellspacing="0" role="presentation">
-                                          <!-- <![endif] -->
-                                          <tr>
-                                            <td style="vertical-align: middle; text-align: center; padding-top: 10px; padding-bottom: 10px; padding-left: 10px; padding-right: 10px;">
-                                              <a href="https://www.reallygoodemails.com/" target="_self" title="" style="text-decoration: none;"><img class="icon" alt="Smiles Davis - RGE Studio logo" src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/pr9telna/6fl/6ah/2jk/RGE%20logo.png" height="auto" width="32.29090909090909" align="center" style="display: block; height: auto; margin: 0 auto; border: 0;" /></a>
-                                            </td>
-                                            <td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 400; color: #140231; vertical-align: middle; letter-spacing: normal; text-align: center; line-height: normal;">
-                                              <a href="https://www.reallygoodemails.com/" target="_self" title="" style="color: #140231; text-decoration: none;">Designed with RGE Studio</a>
-                                            </td>
-                                          </tr>
-                                        </table>
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            
           </td>
         </tr>
       </tbody>

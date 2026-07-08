@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "todolist.todos",
     "todolist.tasks",
+    "django_celery_beat"
 ]
 
 MIDDLEWARE = [

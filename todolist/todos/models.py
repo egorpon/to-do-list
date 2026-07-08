@@ -27,21 +27,22 @@ class ReminderLog(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="reminder_logs"
     )
+    date = models.DateField(blank=True, null=False)
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.PENDING
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    error_message = models.TextField(blank=True, default="")
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=(
                     "user",
-                    "created_at",
+                    "date",
                 ),
-                name="unique_daily_reminder",
+                name="unique_daily_summary",
             )
         ]
 
     def __str__(self):
-        return f"Reminder for {self.user} on {self.created_at}: {self.status}"
+        return f"{self.user} - {self.created_at}: {self.status}"
