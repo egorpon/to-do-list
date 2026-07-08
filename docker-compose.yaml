@@ -30,6 +30,43 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
 
+  web:
+      build: .
+      restart: always
+      command: python manage.py runserver 0.0.0.0:8000
+      volumes:
+        - .:/app
+      ports:
+        - 8000:8000
+      env_file:
+        - .env
+      depends_on:
+        - postgres_db
+        - rabbitmq
+
+  celery_worker:
+    build: .
+    restart: always
+    command: celery -A todolist.async_tasks worker --loglevel=info --concurrency 8
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - postgres_db
+      - rabbitmq
+
+  celery_beat:
+    build: .
+    restart: always
+    command: celery -A todolist.async_tasks beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - postgres_db
+      - rabbitmq
 
 volumes:
     postgres_data:
