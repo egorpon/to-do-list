@@ -12,7 +12,7 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     due_date = models.DateTimeField(blank=True, null=True, db_index=True)
     is_completed = models.BooleanField(default=False, db_index=True)
-    completed_at = models.DateTimeField(blank=True, null=False)
+    completed_at = models.DateTimeField(blank=True, null=True)
 
     todo = models.ForeignKey(TodoList, on_delete=models.CASCADE, related_name="tasks")
 

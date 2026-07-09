@@ -43,7 +43,7 @@ def get_overdue_tasks(*, user: User, limit: int = 5) -> QuerySet[Task]:
 def get_upcoming_tasks_this_week(*, user: User, limit: int = 5) -> QuerySet[Task]:
     today = timezone.localdate()
     week_start = today - datetime.timedelta(days=today.weekday())
-    week_end = week_start + datetime.timezone(days=6)
+    week_end = week_start + datetime.timedelta(days=6)
 
     return Task.objects.filter(
         todo__owner=user,

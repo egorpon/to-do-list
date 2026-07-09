@@ -14,22 +14,23 @@ from django.utils.html import strip_tags
 from smtplib import SMTPException
 
 
-def send_daily_summary() -> None:
+def send_daily_summary() -> bool:
+    has_error = False
     users = get_users_with_active_tasks()
+
     for user in users:
         log, created = ReminderLog.objects.get_or_create(
             user=user,
             date=timezone.localdate(),
             defaults={"status": ReminderLog.Status.PENDING},
         )
-
         if not created and log.status == ReminderLog.Status.SUCCESS:
             continue
 
         try:
             if log.status == ReminderLog.Status.FAILED:
                 log.status = ReminderLog.Status.PENDING
-                log.save()
+                log.save(update_fields=["status"])
 
             stats = get_tasks_stats(user=user)
             overdue_tasks = get_overdue_tasks(user=user)
@@ -42,7 +43,6 @@ def send_daily_summary() -> None:
                 upcoming_tasks_this_week=upcoming_tasks_this_week,
                 completed_tasks_this_week=completed_tasks_this_week,
             )
-
             send_mail(
                 subject="Your daily summary",
                 message=plain_message,
@@ -50,19 +50,16 @@ def send_daily_summary() -> None:
                 from_email=None,
                 recipient_list=[user.email],
             )
-
             log.status = ReminderLog.Status.SUCCESS
-            log.save()
+            log.save(update_fields=["status"])
 
-        except  SMTPException as exc:
+        except SMTPException as exc:
             log.status = ReminderLog.Status.FAILED
             log.error_message = str(exc)
-            log.save()
+            log.save(update_fields=["status", "error_message"])
             has_error = True
 
-    if has_error:
-        raise SMTPException("SMTP server connection failed.")
-
+    return has_error
 
 
 def build_summary_email(
@@ -79,7 +76,7 @@ def build_summary_email(
         "overdue_tasks": overdue_tasks,
         "upcoming_tasks_this_week": upcoming_tasks_this_week,
         "completed_tasks_this_week": completed_tasks_this_week,
-        **stats,
+        "stats": stats,
     }
 
     html_message = render_to_string(

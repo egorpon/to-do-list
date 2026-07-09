@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import TodoList
 from todolist.tasks.models import Task
+from todolist.todos.models import ReminderLog
 # Register your models here.
 
 
@@ -20,3 +21,11 @@ class TodoListAdmin(admin.ModelAdmin):
         if not obj.owner:
             obj.owner = request.user
         return super().save_model(request, obj, form, change)
+
+
+@admin.register(ReminderLog)
+class ReminderLogAdmin(admin.ModelAdmin):
+    list_display = ["id", "user", "date", "status"]
+    list_display_links = ["id"]
+    list_filter = ["status", "date"]
+    search_fields = ["user"]

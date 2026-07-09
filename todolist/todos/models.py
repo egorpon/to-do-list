@@ -45,4 +45,4 @@ class ReminderLog(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user} - {self.created_at}: {self.status}"
+        return f"{self.user} - {self.date}: {self.status}"

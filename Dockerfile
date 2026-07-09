@@ -16,5 +16,3 @@ COPY . .
 RUN uv sync
 
 ENV PATH="/app/.venv/bin:$PATH"
-
-EXPOSE 8000
