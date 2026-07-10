@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import exceptions, status
 from rest_framework.serializers import as_serializer_error
 from rest_framework.views import exception_handler
-from todolist.api.v1.exceptions import TodoAppBaseError, TransientEmailError
+from todolist.api.v1.exceptions import TodoAppBaseError
 
 from rest_framework.response import Response
 
