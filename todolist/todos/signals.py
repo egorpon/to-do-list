@@ -1,0 +1,12 @@
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from todolist.todos.models import TodoList
+from django.core.cache import cache
+
+
+@receiver([post_save,post_delete], sender=TodoList)
+def invalidate_todolist_cache(sender, instance, **kwargs):
+
+    print("Clearing todolist cache")
+
+    cache.delete_pattern("*todo_list")

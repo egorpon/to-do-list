@@ -12,6 +12,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from todolist.api.v1.permissions import IsTodoOwner
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 # Create your views here.
 
 
@@ -20,12 +22,14 @@ class TodoListAPI(GenericAPIView):
     pagination_class = PageNumberPagination
     permission_classes = (IsAuthenticated,)
 
+    @method_decorator(cache_page(60 * 15, key_prefix="todo_list"))
     @extend_schema(
         tags=["todolist"],
         responses={status.HTTP_200_OK: TodoDisplaySerializer(many=True)},
     )
     def get(self, request):
-
+        import time
+        time.sleep(10)
         todos = todos_list(owner=request.user)
         page = self.paginate_queryset(todos)
         if page is not None:
@@ -34,6 +38,7 @@ class TodoListAPI(GenericAPIView):
 
         serializer = self.output_serializer_class(todos)
         return Response(serializer.data)
+
 
 
 class TodoDetailAPI(GenericAPIView):
