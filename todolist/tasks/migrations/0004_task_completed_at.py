@@ -5,16 +5,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tasks', '0003_alter_task_due_date_alter_task_is_completed'),
+        ("tasks", "0003_alter_task_due_date_alter_task_is_completed"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='completed_at',
-            field=models.DateTimeField(blank=True, default=datetime.datetime(2026, 7, 7, 12, 9, 47, 750540, tzinfo=datetime.timezone.utc)),
+            model_name="task",
+            name="completed_at",
+            field=models.DateTimeField(
+                blank=True,
+                default=datetime.datetime(
+                    2026, 7, 7, 12, 9, 47, 750540, tzinfo=datetime.timezone.utc
+                ),
+            ),
             preserve_default=False,
         ),
     ]

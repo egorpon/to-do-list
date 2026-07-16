@@ -6,34 +6,35 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('todos', '0003_reminderlog'),
+        ("todos", "0003_reminderlog"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='reminderlog',
-            name='unique_daily_reminder',
+            model_name="reminderlog",
+            name="unique_daily_reminder",
         ),
         migrations.AddField(
-            model_name='reminderlog',
-            name='date',
+            model_name="reminderlog",
+            name="date",
             field=models.DateField(blank=True, default=django.utils.timezone.now),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='reminderlog',
-            name='error_message',
-            field=models.TextField(blank=True, default=''),
+            model_name="reminderlog",
+            name="error_message",
+            field=models.TextField(blank=True, default=""),
         ),
         migrations.AddConstraint(
-            model_name='reminderlog',
-            constraint=models.UniqueConstraint(fields=('user', 'date'), name='unique_daily_summary'),
+            model_name="reminderlog",
+            constraint=models.UniqueConstraint(
+                fields=("user", "date"), name="unique_daily_summary"
+            ),
         ),
         migrations.RemoveField(
-            model_name='reminderlog',
-            name='created_at',
+            model_name="reminderlog",
+            name="created_at",
         ),
     ]

@@ -4,9 +4,9 @@ from todolist.todos.models import TodoList
 from django.core.cache import cache
 
 
-@receiver([post_save,post_delete], sender=TodoList)
+@receiver([post_save, post_delete], sender=TodoList)
 def invalidate_todolist_cache(sender, instance, **kwargs):
 
     print("Clearing todolist cache")
 
-    cache.delete_pattern("*todo_list")
+    cache.delete_pattern("*todolist*")

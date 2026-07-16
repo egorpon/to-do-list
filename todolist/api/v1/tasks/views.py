@@ -15,16 +15,14 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from todolist.api.v1.pagination import PageNumberPagination
 from rest_framework.response import Response
+from todolist.todos.selectors import get_todo
 # Create your views here.
 
 
 class TaskListAPI(GenericAPIView):
     output_serializer_class = TaskDisplaySerializer
     pagination_class = PageNumberPagination
-    permission_classes = (
-        IsAuthenticated,
-        IsTodoOwner,
-    )
+    permission_classes = (IsAuthenticated,)
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -54,10 +52,7 @@ class TaskListAPI(GenericAPIView):
 
 class TaskDetailAPI(GenericAPIView):
     output_serializer_class = TaskDisplaySerializer
-    permission_classes = (
-        IsAuthenticated,
-        IsTodoOwner,
-    )
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         tags=["tasks"],
@@ -65,8 +60,7 @@ class TaskDetailAPI(GenericAPIView):
     )
     def get(self, request, task_id):
 
-        task = get_task(task_id=task_id)
-        self.check_object_permissions(request, task)
+        task = get_task(task_id=task_id, user=request.user)
         serializer = self.output_serializer_class(task)
         return Response(serializer.data)
 
@@ -85,10 +79,12 @@ class TaskCreateAPI(GenericAPIView):
         responses={status.HTTP_201_CREATED: TaskDisplaySerializer()},
     )
     def post(self, request, todo_id):
+        todo = get_todo(todo_id=todo_id, owner=request.user)
+
         serializer = self.input_serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        task = task_create(**serializer.validated_data, todo_id=todo_id)
+        task = task_create(**serializer.validated_data, todo=todo)
 
         return Response(
             self.output_serializer_class(task).data, status=status.HTTP_201_CREATED
@@ -98,10 +94,7 @@ class TaskCreateAPI(GenericAPIView):
 class TaskUpdateAPI(GenericAPIView):
     input_serializer_class = TaskUpdateSerializer
     output_serializer_class = TaskDisplaySerializer
-    permission_classes = (
-        IsAuthenticated,
-        IsTodoOwner,
-    )
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         tags=["tasks"],
@@ -109,8 +102,8 @@ class TaskUpdateAPI(GenericAPIView):
         responses={201: TaskDisplaySerializer()},
     )
     def patch(self, request, task_id):
-        task = get_task(task_id=task_id)
-        self.check_object_permissions(request, task)
+        task = get_task(task_id=task_id, user=request.user)
+
         serializer = self.input_serializer_class(
             instance=task, data=request.data, partial=True
         )
@@ -122,15 +115,11 @@ class TaskUpdateAPI(GenericAPIView):
 
 
 class TaskDeleteAPI(GenericAPIView):
-    permission_classes = (
-        IsAuthenticated,
-        IsTodoOwner,
-    )
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(tags=["tasks"], responses={status.HTTP_204_NO_CONTENT: None})
     def delete(self, request, task_id):
-        task = get_task(task_id=task_id)
-        self.check_object_permissions(request, task)
+        task = get_task(task_id=task_id, user=request.user)
         task.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

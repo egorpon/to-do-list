@@ -5,6 +5,7 @@ from celery import shared_task
 def send_daily_summary_task(self):
 
     from todolist.tasks.services.notifications import send_daily_summary
+
     has_error = send_daily_summary()
 
     if has_error:

@@ -1,5 +1,4 @@
-from rest_framework.test import APITestCase, APIClient
-from todolist.tasks.tests.factories import TaskFactory
+from rest_framework.test import APITestCase
 from todolist.todos.tests.factories import TodoListFactory, UserFactory
 from django.urls import reverse
 from rest_framework import status

@@ -6,23 +6,52 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('todos', '0002_alter_todolist_description_alter_todolist_owner'),
+        ("todos", "0002_alter_todolist_description_alter_todolist_owner"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReminderLog',
+            name="ReminderLog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('SUCCESS', 'Success'), ('FAILED', 'Failed')], default='PENDING', max_length=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reminder_logs', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("SUCCESS", "Success"),
+                            ("FAILED", "Failed"),
+                        ],
+                        default="PENDING",
+                        max_length=10,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reminder_logs",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'constraints': [models.UniqueConstraint(fields=('user', 'created_at'), name='unique_daily_reminder')],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("user", "created_at"), name="unique_daily_reminder"
+                    )
+                ],
             },
         ),
     ]

@@ -1,4 +1,5 @@
 from todolist.tasks.models import Task
+from todolist.todos.models import TodoList
 from datetime import datetime
 from django.db import transaction
 from typing import Any
@@ -10,10 +11,10 @@ def task_create(
     *,
     name: str,
     due_date: datetime = None,
-    todo_id: int,
+    todo: TodoList,
     description: str = "",
 ) -> Task:
-    obj = Task(name=name, description=description, due_date=due_date, todo_id=todo_id)
+    obj = Task(name=name, description=description, due_date=due_date, todo=todo)
 
     obj.full_clean()
     obj.save()
@@ -33,7 +34,7 @@ def _apply_complete(*, task: Task, is_completed: bool) -> None:
 def task_update(*, data: dict[str, Any], task: Task) -> Task:
     if "is_completed" in data:
         _apply_complete(task=task, is_completed=data.pop("is_completed"))
-        
+
     for field, value in data.items():
         setattr(task, field, value)
 

@@ -11,9 +11,6 @@ from todolist.todos.services.crud import todolist_create, todolist_update
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
-from todolist.api.v1.permissions import IsTodoOwner
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 # Create your views here.
 
 
@@ -22,40 +19,32 @@ class TodoListAPI(GenericAPIView):
     pagination_class = PageNumberPagination
     permission_classes = (IsAuthenticated,)
 
-    @method_decorator(cache_page(60 * 15, key_prefix="todo_list"))
+    # @method_decorator(cache_page(60 * 15, key_prefix="todolist"))
     @extend_schema(
         tags=["todolist"],
         responses={status.HTTP_200_OK: TodoDisplaySerializer(many=True)},
     )
     def get(self, request):
-        import time
-        time.sleep(10)
+        # import time
+        # time.sleep(5)
         todos = todos_list(owner=request.user)
         page = self.paginate_queryset(todos)
-        if page is not None:
-            serializer = self.output_serializer_class(page, many=True)
-            return self.get_paginated_response(serializer.data)
 
-        serializer = self.output_serializer_class(todos)
-        return Response(serializer.data)
-
+        serializer = self.output_serializer_class(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class TodoDetailAPI(GenericAPIView):
     output_serializer_class = TodoDisplaySerializer
-    permission_classes = (
-        IsAuthenticated,
-        IsTodoOwner,
-    )
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         tags=["todolist"], responses={status.HTTP_200_OK: TodoDisplaySerializer}
     )
     def get(self, request, todo_id):
 
-        todos = get_todo(todo_id=todo_id, owner=request.user)
-
-        serializer = self.output_serializer_class(todos)
+        todo = get_todo(todo_id=todo_id, owner=request.user)
+        serializer = self.output_serializer_class(todo)
         return Response(serializer.data)
 
 
@@ -83,7 +72,7 @@ class TodoCreateAPI(GenericAPIView):
 class TodoUpdateAPI(GenericAPIView):
     input_serializer_class = TodoUpdateSerializer
     output_serializer_class = TodoDisplaySerializer
-    permission_classes = (IsAuthenticated, IsTodoOwner)
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         tags=["todolist"],
@@ -104,10 +93,7 @@ class TodoUpdateAPI(GenericAPIView):
 
 
 class TodoDeleteAPI(GenericAPIView):
-    permission_classes = (
-        IsAuthenticated,
-        IsTodoOwner,
-    )
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(tags=["todolist"], responses={status.HTTP_204_NO_CONTENT: None})
     def delete(self, request, todo_id):
