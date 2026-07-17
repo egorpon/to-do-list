@@ -8,7 +8,6 @@ from rest_framework.generics import GenericAPIView
 from todolist.tasks.filters import TaskFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
-from todolist.api.v1.permissions import IsTodoOwner
 from todolist.tasks.selectors import tasks_list, get_task
 from todolist.tasks.services.crud import task_create, task_update
 from rest_framework import status
@@ -68,10 +67,7 @@ class TaskDetailAPI(GenericAPIView):
 class TaskCreateAPI(GenericAPIView):
     input_serializer_class = TaskCreateSerializer
     output_serializer_class = TaskDisplaySerializer
-    permission_classes = (
-        IsAuthenticated,
-        IsTodoOwner,
-    )
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         tags=["tasks"],

@@ -11,4 +11,5 @@ class TaskFactory(factory.django.DjangoModelFactory):
     description = ""
     due_date = None
     is_completed = False
+    completed_at= None
     todo = factory.SubFactory(TodoListFactory)

@@ -46,12 +46,12 @@ class TodoDetailViewTest(APITestCase):
 
         self.assertEqual(self.todo.name, todo["name"])
 
-    def test_todo_detail_returns_403_for_non_owner(self):
+    def test_todo_detail_returns_404_for_non_owner(self):
         other_todo = TodoListFactory()
 
         response = self.client.get(reverse("todo-detail", args=[other_todo.id]))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class TodoCreateViewTest(APITestCase):
@@ -82,13 +82,13 @@ class TodoUpdateViewTest(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_todo_update_returns_403_for_non_owner(self):
+    def test_todo_update_returns_404_for_non_owner(self):
         other_todo = TodoListFactory()
         response = self.client.patch(
             reverse("todo-update", args=[other_todo.id]), data={"name": "updated field"}
         )
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_todo_update_returns_todo(self):
         response = self.client.patch(
@@ -108,8 +108,8 @@ class TodoDeleteViewTest(APITestCase):
         response = self.client.delete(reverse("todo-delete", args=[self.todo.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_todo_delete_returns_403_for_non_owner(self):
+    def test_todo_delete_returns_404_for_non_owner(self):
         other_todo = TodoListFactory()
         response = self.client.delete(reverse("todo-delete", args=[other_todo.id]))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

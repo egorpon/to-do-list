@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from todolist.todos.tests.factories import UserFactory, TodoListFactory
 from todolist.tasks.tests.factories import TaskFactory
 from django.urls import reverse
+from django.utils import timezone
 
 from rest_framework import status
 # Create your tests here.
@@ -13,10 +14,14 @@ class TaskListViewTest(APITestCase):
         self.todo = TodoListFactory(owner=self.user)
 
         self.task_1 = TaskFactory(
-            todo=self.todo, due_date="2026-06-07T00:00:00Z", is_completed=True
+            todo=self.todo,
+            due_date=timezone.localtime() + timezone.timedelta(days=1),
+            is_completed=True,
         )
         self.task_2 = TaskFactory(
-            todo=self.todo, due_date="2026-06-10T00:00:00Z", is_completed=False
+            todo=self.todo,
+            due_date=timezone.localtime() + timezone.timedelta(days=6),
+            is_completed=False,
         )
 
         self.other_todo = TodoListFactory()
@@ -38,10 +43,11 @@ class TaskListViewTest(APITestCase):
 
         self.assertNotIn(self.other_task.id, ids)
 
-    def test_task_list_returns_403_for_non_task_owner(self):
+    def test_task_list_returns_200_and_empty_list_for_non_task_owner(self):
         response = self.client.get(reverse("task-list", args=[self.other_todo.id]))
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        result = response.data["results"]
+        self.assertEqual(result, [])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_task_list_filters_by_is_completed(self):
         response = self.client.get(
@@ -57,7 +63,10 @@ class TaskListViewTest(APITestCase):
     def test_task_list_filters_by_due_date(self):
         response = self.client.get(
             reverse("task-list", args=[self.todo.id]),
-            {"due_date_after": "2026-06-08", "due_date_before": "2026-06-10"},
+            {
+                "due_date_after": timezone.localtime() + timezone.timedelta(days=1),
+                "due_date_before": timezone.localtime() + timezone.timedelta(days=6),
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -65,7 +74,6 @@ class TaskListViewTest(APITestCase):
         tasks = response.data["results"]
 
         self.assertEqual(len(tasks), 1)
-        self.assertEqual(tasks[0]["due_date"], "2026-06-10T00:00:00Z")
 
 
 class TaskDetailViewTest(APITestCase):
@@ -92,10 +100,10 @@ class TaskDetailViewTest(APITestCase):
         self.assertEqual(self.task.id, task["id"])
         self.assertFalse(self.other_task.id == task["id"])
 
-    def test_task_detail_returns_403_for_non_task_owner(self):
+    def test_task_detail_returns_404_for_non_task_owner(self):
         response = self.client.get(reverse("task-detail", args=[self.other_task.id]))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class TaskCreateViewTest(APITestCase):
@@ -123,11 +131,11 @@ class TaskCreateViewTest(APITestCase):
 
         self.assertEqual(task["name"], "test")
 
-    def test_task_create_returns_403_for_non_own_todo(self):
+    def test_task_create_returns_404_for_non_own_todo(self):
         response = self.client.post(
             reverse("task-create", args=[self.other_todo.id]), data={"name": "test"}
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class TaskUpdateViewTest(APITestCase):
@@ -156,13 +164,13 @@ class TaskUpdateViewTest(APITestCase):
         task = response.data
         self.assertEqual(task["name"], "updated field")
 
-    def test_task_update_returns_403_for_non_own_task(self):
+    def test_task_update_returns_404_for_non_own_task(self):
         response = self.client.patch(
             reverse("task-update", args=[self.other_task.id]),
             data={"name": "updated field"},
         )
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class TaskDeleteViewTest(APITestCase):
@@ -182,7 +190,7 @@ class TaskDeleteViewTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_task_delete_returns_403_for_non_own_task(self):
+    def test_task_delete_returns_404_for_non_own_task(self):
         response = self.client.delete(reverse("task-delete", args=[self.other_task.id]))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

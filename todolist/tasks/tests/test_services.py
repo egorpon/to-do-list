@@ -13,7 +13,7 @@ class TaskServiceTest(TestCase):
         self.todo = TodoListFactory(owner=self.user)
 
     def test_task_create_saves_task_to_db(self):
-        task = task_create(name="wash the dishes", todo_id=self.todo.id)
+        task = task_create(name="wash the dishes", todo=self.todo)
         self.assertEqual(Task.objects.count(), 1)
         self.assertEqual(task.name, "wash the dishes")
 
@@ -22,7 +22,7 @@ class TaskServiceTest(TestCase):
             task_create(
                 name="wash the dishes",
                 due_date=timezone.now() - timezone.timedelta(days=1),
-                todo_id=self.todo.id,
+                todo=self.todo,
             )
         self.assertEqual(Task.objects.count(), 0)
 
@@ -45,3 +45,18 @@ class TaskServiceTest(TestCase):
             )
         task.refresh_from_db()
         self.assertEqual(task.name, "updated field")
+
+    def test_completed_task_has_completed_at_field_set(self):
+        task = TaskFactory(todo=self.todo)
+        updated_task = task_update(data={"is_completed": True}, task=task)
+        self.assertIsNotNone(updated_task.completed_at)
+        self.assertAlmostEqual(
+            updated_task.completed_at,
+            timezone.now(),
+            delta=timezone.timedelta(seconds=2),
+        )
+
+    def test_uncompleting_task_clears_completed_at_field(self):
+        task = TaskFactory(todo=self.todo)
+        updated_task = task_update(data={"is_completed": False}, task=task)
+        self.assertIsNone(updated_task.completed_at)
