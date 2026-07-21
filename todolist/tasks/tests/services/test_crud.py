@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 
-class TaskServiceTest(TestCase):
+class TaskCrudTest(TestCase):
     def setUp(self):
         self.user = UserFactory()
         self.todo = TodoListFactory(owner=self.user)
