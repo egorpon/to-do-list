@@ -11,7 +11,7 @@ from smtplib import SMTPException
 
 class TaskNotificationsTest(TestCase):
     def setUp(self):
-        self.user_1 = UserFactory(email="ponomarenkoegor36@gmail.com")
+        self.user_1 = UserFactory()
         self.todo = TodoListFactory(owner=self.user_1)
         self.task1 = TaskFactory(todo=self.todo)
         self.task2 = TaskFactory(
@@ -75,6 +75,17 @@ class TaskNotificationsTest(TestCase):
         log = ReminderLog.objects.get(user=self.user_1, date=timezone.localdate())
         self.assertEqual(log.status, ReminderLog.Status.SUCCESS)
 
+    @patch("todolist.tasks.services.notifications.send_mail")
+    def test_send_daily_summary_does_not_send_email_for_user_without_active_tasks(self, mock_send_mail):
+        user = UserFactory()
+        todo = TodoListFactory(owner=user)
+        task = TaskFactory(todo=todo, is_completed=True)
+
+        send_daily_summary()
+
+        mock_send_mail.assert_called_once()
+
+        self.assertFalse(ReminderLog.objects.filter(user=user).exists())
 
     
     def test_send_daily_summary_continues_processing_after_one_user_fails(self):
@@ -88,6 +99,7 @@ class TaskNotificationsTest(TestCase):
             if kwargs['recipient_list'] == [self.user_1.email]:
                 raise SMTPException("failed")
             return 1
+        
         with patch("todolist.tasks.services.notifications.send_mail", side_effect=side_effect):
             has_error = send_daily_summary()
 

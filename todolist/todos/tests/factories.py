@@ -8,6 +8,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
 
     username = factory.Faker("user_name")
+    email = factory.Faker("email")
 
 
 class TodoListFactory(factory.django.DjangoModelFactory):
