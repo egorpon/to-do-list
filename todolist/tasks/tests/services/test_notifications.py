@@ -23,9 +23,10 @@ class TaskNotificationsTest(TestCase):
 
         log = ReminderLog.objects.get(user=self.user_1, date=timezone.localdate())
 
+        self.assertEqual(len(mail.outbox), 1)
+
         self.assertEqual(log.status, ReminderLog.Status.SUCCESS)
         self.assertFalse(has_error)
-        self.assertEqual(len(mail.outbox), 1)
 
     @patch(
         "todolist.tasks.services.notifications.send_mail",
@@ -38,9 +39,10 @@ class TaskNotificationsTest(TestCase):
 
         log = ReminderLog.objects.get(user=self.user_1, date=timezone.localdate())
 
+        self.assertEqual(len(mail.outbox), 0)
+        
         self.assertEqual(log.status, ReminderLog.Status.FAILED)
         self.assertTrue(has_error)
-        self.assertEqual(len(mail.outbox), 0)
 
     @patch("todolist.tasks.services.notifications.send_mail")
     def test_send_daily_summary_skips_user_with_existing_success_log(

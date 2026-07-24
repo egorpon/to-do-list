@@ -9,4 +9,4 @@ def send_daily_summary_task(self):
     has_error = send_daily_summary()
 
     if has_error:
-        raise self.retry(countdown=30)
+        self.retry(countdown=30)
