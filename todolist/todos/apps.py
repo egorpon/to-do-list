@@ -5,4 +5,4 @@ class TodosConfig(AppConfig):
     name = "todolist.todos"
 
     def ready(self):
-        pass
+        import todolist.todos.signals
