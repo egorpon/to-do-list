@@ -11,8 +11,9 @@ from todolist.todos.services.crud import todolist_create, todolist_update
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
-from django.views.decorators.cache import cache_page, never_cache
+from django.views.decorators.vary import vary_on_headers
 from django.utils.decorators import method_decorator
+from django.core.cache import cache
 # Create your views here.
 
 
@@ -25,15 +26,27 @@ class TodoListAPI(GenericAPIView):
         tags=["todolist"],
         responses={status.HTTP_200_OK: TodoDisplaySerializer(many=True)},
     )
-    @method_decorator(cache_page(60 * 15, key_prefix="todolist"))
+    @method_decorator(vary_on_headers("Authorization"))
     def get(self, request):
+        page_number = request.query_params.get("page", 1)
+        page_size = request.query_params.get("page_size", 5)
+        cache_key = f"todos:user:{request.user.id}:page:{page_number}:size:{page_size}"
+
+        data = cache.get(cache_key)
+        if data is not None:
+            return Response(data)
+
         import time
+
         time.sleep(5)
+
         todos = todos_list(owner=request.user)
         page = self.paginate_queryset(todos)
-
         serializer = self.output_serializer_class(page, many=True)
-        return self.get_paginated_response(serializer.data)
+        response = self.get_paginated_response(serializer.data)
+
+        cache.set(cache_key, response.data, 60 * 15)
+        return response
 
 
 class TodoDetailAPI(GenericAPIView):
