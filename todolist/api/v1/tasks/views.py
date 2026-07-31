@@ -15,6 +15,9 @@ from drf_spectacular.utils import extend_schema
 from todolist.api.v1.pagination import PageNumberPagination
 from rest_framework.response import Response
 from todolist.todos.selectors import get_todo
+from django.core.cache import cache
+from django.views.decorators.vary import vary_on_headers
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 
@@ -35,18 +38,34 @@ class TaskListAPI(GenericAPIView):
         tags=["tasks"],
         responses={status.HTTP_200_OK: TaskDisplaySerializer(many=True)},
     )
+    @method_decorator(vary_on_headers("Authorization"))
     def get(self, request, todo_id):
+        query_params = request.query_params.urlencode()
+        cache_key = f"tasks:user:{request.user.id}:{query_params}"
+
+        data = cache.get(cache_key)
+        if data is not None:
+            return Response(data)
+
         tasks = tasks_list(
             todo_id=todo_id,
             user=request.user,
         )
+
+        import time
+
+        time.sleep(5)
 
         tasks = self.filter_queryset(tasks)
 
         page = self.paginate_queryset(tasks)
 
         serializer = self.output_serializer_class(page, many=True)
-        return self.get_paginated_response(serializer.data)
+        response = self.get_paginated_response(serializer.data)
+
+        cache.set(cache_key, response.data, 60 * 15)
+
+        return response
 
 
 class TaskDetailAPI(GenericAPIView):

@@ -28,17 +28,12 @@ class TodoListAPI(GenericAPIView):
     )
     @method_decorator(vary_on_headers("Authorization"))
     def get(self, request):
-        page_number = request.query_params.get("page", 1)
-        page_size = request.query_params.get("page_size", 5)
-        cache_key = f"todos:user:{request.user.id}:page:{page_number}:size:{page_size}"
+        query_params = request.query_params.urlencode()
+        cache_key = f"todos:user:{request.user.id}:{query_params}"
 
         data = cache.get(cache_key)
         if data is not None:
             return Response(data)
-
-        import time
-
-        time.sleep(5)
 
         todos = todos_list(owner=request.user)
         page = self.paginate_queryset(todos)
