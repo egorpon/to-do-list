@@ -21,6 +21,7 @@ ignore = ["F403","E402"]
 
 [dependency-groups]
 dev = [
+    "django-silk>=5.5.0",
     "factory-boy>=3.3.3",
     "ruff>=0.15.16",
 ]

@@ -22,11 +22,6 @@ class TaskDisplaySerializer(ReadOnlySerializerMixin, serializers.ModelSerializer
         )
 
 
-class FilterSerializer(serializers.Serializer):
-    is_completed = serializers.BooleanField(required=False)
-    due_date = serializers.DateTimeField(required=False)
-
-
 class TaskCreateSerializer(CreateOnlySerializerMixin, serializers.Serializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(allow_blank=True, required=False)

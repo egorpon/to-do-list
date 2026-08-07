@@ -52,10 +52,6 @@ class TaskListAPI(GenericAPIView):
             user=request.user,
         )
 
-        import time
-
-        time.sleep(5)
-
         tasks = self.filter_queryset(tasks)
 
         page = self.paginate_queryset(tasks)
