@@ -8,6 +8,11 @@ Client -> Django API (:8000) -> PostgreSQL (:5432)
                               -> RabbitMQ (:5672) -> Celery worker/beat
 ```
 
+## Stack
+
+Django · DRF · PostgreSQL · Redis · Celery (worker + beat) + RabbitMQ · SimpleJWT · drf-spectacular · Gmail SMTP
+
+
 ## Prerequisites
 
 - Python 3.11+
